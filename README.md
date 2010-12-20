@@ -1,8 +1,9 @@
-# JspCompile
+# JspTools
 
-Compiles JSPs in a Web application on startup.
+JSP utility classes for Web applications
 
-## How to use
+
+## Compile JSPs on startup
 
 In the `web.xml` file, define a listener:
 
