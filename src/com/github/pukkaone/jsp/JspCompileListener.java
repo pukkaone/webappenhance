@@ -22,7 +22,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.github.pukkaone.jspcompile;
+package com.github.pukkaone.jsp;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
