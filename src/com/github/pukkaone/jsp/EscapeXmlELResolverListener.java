@@ -31,15 +31,15 @@ import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
 /**
- * Registers escape XML ELResolver on startup.
+ * Registers ELResolver that escapes XML in EL expression String values.
  */
 public class EscapeXmlELResolverListener implements ServletContextListener {
     private static final long serialVersionUID = 1L;
 
     public void contextInitialized(ServletContextEvent event) {
-        ServletContext context = event.getServletContext(); 
+        ServletContext servletContext = event.getServletContext(); 
         JspApplicationContext jspContext = 
-            JspFactory.getDefaultFactory().getJspApplicationContext(context); 
+                JspFactory.getDefaultFactory().getJspApplicationContext(servletContext); 
         jspContext.addELResolver(new EscapeXmlELResolver()); 
     }
 

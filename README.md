@@ -12,7 +12,7 @@ In the `web.xml` file, add a listener:
     </listener> 
 
 
-## Prevent cross-site scripting by escaping EL expression values
+## Escape EL expression values to prevent cross-site scripting
 
 In the `web.xml` file, add a listener:
 
