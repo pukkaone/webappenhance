@@ -81,7 +81,6 @@ public class EscapeXmlELResolver extends ELResolver {
 
         if (value instanceof String) {
             value = EscapeXml.escape((String) value);
-            context.setPropertyResolved(true);
         }
         return value;
     }
