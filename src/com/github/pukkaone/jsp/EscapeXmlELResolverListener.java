@@ -24,23 +24,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.github.pukkaone.jsp;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspFactory;
 
 /**
  * Registers ELResolver that escapes XML in EL expression String values.
  */
 public class EscapeXmlELResolverListener implements ServletContextListener {
-    private static final long serialVersionUID = 1L;
 
     public void contextInitialized(ServletContextEvent event) {
-        ServletContext servletContext = event.getServletContext(); 
-        JspApplicationContext jspContext = 
-                JspFactory.getDefaultFactory().getJspApplicationContext(servletContext); 
-        jspContext.addELResolver(new EscapeXmlELResolver()); 
+        JspFactory.getDefaultFactory()
+                .getJspApplicationContext(event.getServletContext())
+                .addELResolver(new EscapeXmlELResolver());
     }
 
     public void contextDestroyed(ServletContextEvent event) {

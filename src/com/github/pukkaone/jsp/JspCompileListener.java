@@ -39,7 +39,6 @@ import javax.servlet.http.HttpServletResponse;
  * Compiles JSPs on startup.
  */
 public class JspCompileListener implements ServletContextListener {
-    private static final long serialVersionUID = 1L;
     
     private ServletContext servletContext;
     private HttpServletRequest request = createHttpServletRequest();
