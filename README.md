@@ -1,6 +1,6 @@
-# JspTools
+# Java Web Application Enhancements Library
 
-JSP utility classes for Web applications
+Utility library for Java web applications
 
 
 ## Compile JSPs on startup
