@@ -38,7 +38,12 @@ import javax.el.PropertyNotWritableException;
 public class EscapeXmlELResolver extends ELResolver {
 
     private ELResolver originalResolver;
-    private boolean gettingValue;
+    private ThreadLocal<Boolean> gettingValue = new ThreadLocal<Boolean>() {
+        @Override
+        protected Boolean initialValue() {
+            return Boolean.FALSE;
+        }
+    };
     
     private ELResolver getOriginalResolver(ELContext context) {
         if (originalResolver == null) {
@@ -70,14 +75,17 @@ public class EscapeXmlELResolver extends ELResolver {
     public Object getValue(ELContext context, Object base, Object property)
         throws NullPointerException, PropertyNotFoundException, ELException
     {
-        if (gettingValue) {
+        if (gettingValue.get()) {
             return null;
         }
         
-        gettingValue = true;
+        // This resolver is in the original resolver chain.  When this resolver
+        // invokes the original resolver chain, set a flag so when execution
+        // reaches this resolver, act like this resolver is not in the chain.
+        gettingValue.set(true);
         Object value =
                 getOriginalResolver(context).getValue(context, base, property);
-        gettingValue = false;
+        gettingValue.set(false);
 
         if (value instanceof String) {
             value = EscapeXml.escape((String) value);
