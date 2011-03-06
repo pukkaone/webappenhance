@@ -37,20 +37,12 @@ import javax.el.PropertyNotWritableException;
  */
 public class EscapeXmlELResolver extends ELResolver {
 
-    private ELResolver originalResolver;
     private ThreadLocal<Boolean> excludeMe = new ThreadLocal<Boolean>() {
         @Override
         protected Boolean initialValue() {
             return Boolean.FALSE;
         }
     };
-    
-    private ELResolver getOriginalResolver(ELContext context) {
-        if (originalResolver == null) {
-            originalResolver = context.getELResolver();
-        }
-        return originalResolver;
-    }
     
     @Override
     public Class<?> getCommonPropertyType(ELContext context, Object base) {
@@ -68,52 +60,41 @@ public class EscapeXmlELResolver extends ELResolver {
     public Class<?> getType(ELContext context, Object base, Object property)
         throws NullPointerException, PropertyNotFoundException, ELException
     {
-        if (excludeMe.get()) {
-            return null;
-        }
-        
-        excludeMe.set(true);
-        Class<?> type = getOriginalResolver(context).getType(
-                context, base, property);
-        excludeMe.set(false);
-        return type;
+        return null;
     }
 
     @Override
     public Object getValue(ELContext context, Object base, Object property)
         throws NullPointerException, PropertyNotFoundException, ELException
     {
-        if (excludeMe.get()) {
-            return null;
+        try {
+            if (excludeMe.get()) {
+                return null;
+            }
+            
+            // This resolver is in the original resolver chain. To prevent
+            // infinite recursion, set a flag to prevent this resolver from
+            // invoking the original resolver chain again when its turn in the
+            // chain comes around.
+            excludeMe.set(true);
+            Object value = context.getELResolver().getValue(
+                    context, base, property);
+            
+            if (value instanceof String) {
+                value = EscapeXml.escape((String) value);
+            }
+            return value;
+            
+        } finally {
+            excludeMe.remove();     
         }
-        
-        // This resolver is in the original resolver chain.  When this resolver
-        // invokes the original resolver chain, set a flag so when execution
-        // reaches this resolver, act like this resolver is not in the chain.
-        excludeMe.set(true);
-        Object value = getOriginalResolver(context).getValue(
-                context, base, property);
-        excludeMe.set(false);
-        
-        if (value instanceof String) {
-            value = EscapeXml.escape((String) value);
-        }
-        return value;
     }
 
     @Override
     public boolean isReadOnly(ELContext context, Object base, Object property)
         throws NullPointerException, PropertyNotFoundException, ELException
     {
-        if (excludeMe.get()) {
-            return false;
-        }
-        
-        excludeMe.set(true);
-        boolean readOnly = getOriginalResolver(context).isReadOnly(
-                context, base, property);
-        excludeMe.set(false);
-        return readOnly;
+        return false;
     }
 
     @Override
@@ -121,12 +102,5 @@ public class EscapeXmlELResolver extends ELResolver {
             ELContext context, Object base, Object property, Object value)
         throws NullPointerException, PropertyNotFoundException, PropertyNotWritableException, ELException
     {
-        if (excludeMe.get()) {
-            return;
-        }
-        
-        excludeMe.set(true);
-        getOriginalResolver(context).setValue(context, base, property, value);
-        excludeMe.set(false);
     }
 }
