@@ -15,6 +15,7 @@
   <!-- Get build number. -->
   <target name="build_number">
     <exec
+        osfamily="unix"
         executable="git"
         outputproperty="BUILD_NUMBER"
         failifexecutionfails="false">
@@ -30,6 +31,27 @@
        </outputfilterchain>
      </redirector>
     </exec>
+
+    <exec
+        osfamily="windows"
+        executable="cmd"
+        outputproperty="BUILD_NUMBER"
+        failifexecutionfails="false">
+      <arg value="/c"/>
+      <arg value="git"/>
+      <arg value="describe"/>
+      <arg value="--match"/>
+      <arg value="build"/>
+      <redirector>
+        <outputfilterchain>
+          <tokenfilter>
+            <replaceregex pattern="^[^-]+-" replace=""/>
+            <replaceregex pattern="-.+$" replace=""/>
+          </tokenfilter>
+       </outputfilterchain>
+     </redirector>
+    </exec>
+
     <!-- Set property if the execution failed. -->
     <property name="BUILD_NUMBER" value="UNKNOWN"/>
     <echo message="Build number ${BUILD_NUMBER}"/>
