@@ -40,7 +40,7 @@ public class EscapeXmlELResolver extends ELResolver {
 
     /** pageContext attribute name for flag to enable XML escaping */
     static final String ESCAPE_XML_ATTRIBUTE =
-            EscapeXmlELResolver.class.getPackage() + ".escapeXml";
+            EscapeXmlELResolver.class.getName() + ".escapeXml";
     
     private ThreadLocal<Boolean> excludeMe = new ThreadLocal<Boolean>() {
         @Override

@@ -24,6 +24,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.github.pukkaone.jsp;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
@@ -32,6 +33,7 @@ import javax.el.ELContext;
 import javax.el.ELResolver;
 import javax.el.FunctionMapper;
 import javax.el.VariableMapper;
+import javax.servlet.jsp.JspContext;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,11 +41,11 @@ public class EscapeXMLELResolverTest {
 
     private static final String BASE = "base";
     private static final String PROPERTY = "property";
-    private static final String VALUE = "value";
+    private static final String VALUE = "<h1>&'\"";
 
     private CompositeELResolver compositeResolver;
     
-    private ELContext context = new ELContext() {
+    private ELContext elContext = new ELContext() {
         @Override
         public VariableMapper getVariableMapper() {
             return null;
@@ -60,39 +62,54 @@ public class EscapeXMLELResolverTest {
         }
     };
     
+    private JspContext pageContext = new FakeJspContext();
+    
     @Before
     public void beforeTest() {
         compositeResolver = new CompositeELResolver();
         compositeResolver.add(new EscapeXmlELResolver());
+        compositeResolver.add(new ConstantELResolver(VALUE));
+        
+        elContext.putContext(JspContext.class, pageContext);
     }
     
     @Test
     public void getCommonPropertyType_should_return_null() {
-        assertNull(compositeResolver.getCommonPropertyType(context, BASE));
+        assertNull(compositeResolver.getCommonPropertyType(elContext, BASE));
     }
 
     @Test
     public void getFeatureDescriptors_should_return_empty() {
-        assertFalse(compositeResolver.getFeatureDescriptors(context, BASE).hasNext());
+        assertFalse(compositeResolver.getFeatureDescriptors(elContext, BASE).hasNext());
     }
 
     @Test
-    public void getType_should_not_infinitely_recurse() {
-        compositeResolver.getType(context, BASE, PROPERTY);
+    public void getType_should_return_null() {
+        assertNull(compositeResolver.getType(elContext, BASE, PROPERTY));
     }
 
     @Test
-    public void getValue_should_not_infinitely_recurse() {
-        compositeResolver.getValue(context, BASE, PROPERTY);
+    public void getValue_should_escape_value_when_enabled() {
+        String value = (String) compositeResolver.getValue(elContext, BASE, PROPERTY);
+        assertEquals("&lt;h1&gt;&amp;&#039;&#034;", value);
+    }
+
+    @Test
+    public void getValue_should_not_escape_value_when_disabled() {
+        JspContext pageContext = (JspContext) elContext.getContext(JspContext.class);
+        pageContext.setAttribute(EscapeXmlELResolver.ESCAPE_XML_ATTRIBUTE, Boolean.FALSE);
+        
+        String value = (String) compositeResolver.getValue(elContext, BASE, PROPERTY);
+        assertEquals(VALUE, value);
     }
     
     @Test
-    public void isReadOnly_should_not_infinitely_recurse() {
-        compositeResolver.isReadOnly(context, BASE, PROPERTY);
+    public void isReadOnly_should_return_false() {
+        assertFalse(compositeResolver.isReadOnly(elContext, BASE, PROPERTY));
     }
 
     @Test
     public void setValue_should_not_infinitely_recurse() {
-        compositeResolver.setValue(context, BASE, PROPERTY, VALUE);
+        compositeResolver.setValue(elContext, BASE, PROPERTY, VALUE);
     }
 }
