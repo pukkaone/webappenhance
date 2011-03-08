@@ -22,7 +22,7 @@
   </target>
 
   <!-- Substitute tokens in run-time configuration files. -->
-  <target name="configure" depends="init, build_number">
+  <target name="configure" depends="init, version">
     <copy todir="${classes.dir}" overwrite="true">
       <fileset dir="${template.dir}"/>
       <filterset>

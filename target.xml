@@ -9,11 +9,31 @@
   <!-- Load default properties. -->
   <property file="${top.dir}/default.properties"/>
 
-  <!-- Load version property. -->
-  <property file="${top.dir}/version.properties"/>
+  <target name="version">
+    <!-- Get version from tag. -->
+    <exec
+        osfamily="unix"
+        executable="git"
+        outputproperty="WAE_VERSION"
+        failifexecutionfails="false">
+      <arg value="describe"/>
+    </exec>
 
-  <!-- Get build number. -->
-  <target name="build_number">
+    <exec
+        osfamily="windows"
+        executable="cmd"
+        outputproperty="WAE_VERSION"
+        failifexecutionfails="false">
+      <arg value="/c"/>
+      <arg value="git"/>
+      <arg value="describe"/>
+    </exec>
+
+    <!-- Set property if the execution failed. -->
+    <property name="WAE_VERSION" value="UNKNOWN"/>
+    <echo message="Version ${WAE_VERSION}"/>
+
+    <!-- Get build number. -->
     <exec
         osfamily="unix"
         executable="git"
