@@ -19,3 +19,15 @@ In the `web.xml` file, add a listener:
     <listener>
       <listener-class>com.github.pukkaone.jsp.EscapeXmlELResolverListener</listener-class>
     </listener> 
+
+
+### Disable escaping
+
+Use a custom tag to surround JSP code in which you do not want EL expression
+values to be escaped:
+
+    <%@ taglib prefix="wae" uri="http://pukkaone.github.com/jsp" %>
+
+    <wae:out escapeXml="false">
+      I hope this expression returns safe HTML: ${user.name}
+    </wae:out>

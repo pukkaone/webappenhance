@@ -1,0 +1,72 @@
+<project name="webappenhance" default="dist">
+  <description>
+    Web application enhancements library
+  </description>  
+
+  <property name="top.dir" location="."/>  
+  <import file="${top.dir}/target.xml"/>
+
+  <!-- classpath for compiling main code -->
+  <path id="compile.classpath">
+    <fileset dir="${lib.dir}">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+   
+  <!-- Initialize build directory structure. -->
+  <target name="init">
+    <mkdir dir="${classes.dir}"/>
+    <mkdir dir="${test.classes.dir}"/>
+    <mkdir dir="${test.reports.dir}"/>
+    <mkdir dir="${dist.dir}"/>
+  </target>
+
+  <!-- Substitute tokens in run-time configuration files. -->
+  <target name="configure" depends="init, build_number">
+    <copy todir="${classes.dir}" overwrite="true">
+      <fileset dir="${template.dir}"/>
+      <filterset>
+        <filter token="WAE_VERSION" value="${WAE_VERSION}"/>
+        <filter token="BUILD_NUMBER" value="${BUILD_NUMBER}"/> 
+      </filterset>
+    </copy>
+  </target>
+
+  <!-- Compile main code -->
+  <target name="compile" depends="configure">
+    <javac
+        srcdir="${src.dir}"
+        destdir="${classes.dir}"
+        classpathref="compile.classpath"
+        debug="on"
+        source="${javac.target}"
+        target="${javac.target}"
+        includeantruntime="false"/>
+
+    <copy todir="${classes.dir}">
+      <fileset dir="${src.dir}">
+        <exclude name="**/*.java"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- Create JAR. -->
+  <property name="jar.file" value="${dist.dir}/${ant.project.name}.jar"/>
+
+  <target name="dist" depends="compile">
+    <jar jarfile="${jar.file}" basedir="${classes.dir}">
+      <manifest>
+        <attribute
+            name="Implementation-Version"
+            value="${WAE_VERSION}.${BUILD_NUMBER}"/>
+      </manifest>
+    </jar>
+  </target>
+  
+  <!-- Clean up build directories. -->
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+    <delete dir="${dist.dir}"/>
+  </target>
+    
+</project>

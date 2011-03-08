@@ -1,0 +1,81 @@
+<project name="target">
+
+  <!--
+   To override any default properties, create a custom.properties file
+   in your local directory containing the new properties.
+  -->
+  <property file="${top.dir}/custom.properties"/>
+
+  <!-- Load default properties. -->
+  <property file="${top.dir}/default.properties"/>
+
+  <!-- Load version property. -->
+  <property file="${top.dir}/version.properties"/>
+
+  <!-- Get build number. -->
+  <target name="build_number">
+    <exec
+        executable="git"
+        outputproperty="BUILD_NUMBER"
+        failifexecutionfails="false">
+      <arg value="describe"/>
+      <arg value="--match"/>
+      <arg value="build"/>
+      <redirector>
+        <outputfilterchain>
+          <tokenfilter>
+            <replaceregex pattern="^[^-]+-" replace=""/>
+            <replaceregex pattern="-.+$" replace=""/>
+          </tokenfilter>
+       </outputfilterchain>
+     </redirector>
+    </exec>
+    <!-- Set property if the execution failed. -->
+    <property name="BUILD_NUMBER" value="UNKNOWN"/>
+    <echo message="Build number ${BUILD_NUMBER}"/>
+  </target>
+
+  <!-- classpath for compiling tests -->
+  <path id="test.compile.classpath">
+    <pathelement location="${classes.dir}"/>
+    <path refid="compile.classpath"/>
+  </path>
+
+  <!-- Compile tests. -->
+  <target name="compile-test" depends="compile">
+    <javac
+        srcdir="${test.src.dir}"
+        destdir="${test.classes.dir}"
+        classpathref="test.compile.classpath"
+        debug="on"
+        source="${javac.target}"
+        target="${javac.target}"
+        includeantruntime="false"/>
+
+    <copy todir="${test.classes.dir}">
+      <fileset dir="${test.src.dir}">
+        <exclude name="**/*.java"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- Run tests. -->
+  <target name="test" depends="compile-test">
+    <junit fork="yes" haltonfailure="yes">
+      <classpath>
+        <pathelement location="${test.classes.dir}"/>
+        <path refid="test.compile.classpath"/>
+      </classpath>
+
+      <formatter type="xml"/>
+
+      <batchtest todir="${test.reports.dir}">
+        <fileset dir="${test.src.dir}">
+          <include name="**/*Test.java"/>
+          <exclude name="**/*IntegrationTest.java"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+</project>

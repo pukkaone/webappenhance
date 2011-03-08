@@ -31,12 +31,17 @@ import javax.el.ELException;
 import javax.el.ELResolver;
 import javax.el.PropertyNotFoundException;
 import javax.el.PropertyNotWritableException;
+import javax.servlet.jsp.JspContext;
 
 /**
  * {@link ELResolver} which escapes XML in String values.
  */
 public class EscapeXmlELResolver extends ELResolver {
 
+    /** pageContext attribute name for flag to enable XML escaping */
+    static final String ESCAPE_XML_ATTRIBUTE =
+            EscapeXmlELResolver.class.getPackage() + ".escapeXml";
+    
     private ThreadLocal<Boolean> excludeMe = new ThreadLocal<Boolean>() {
         @Override
         protected Boolean initialValue() {
@@ -67,6 +72,12 @@ public class EscapeXmlELResolver extends ELResolver {
     public Object getValue(ELContext context, Object base, Object property)
         throws NullPointerException, PropertyNotFoundException, ELException
     {
+        JspContext pageContext = (JspContext) context.getContext(JspContext.class);
+        Boolean escapeXml = (Boolean) pageContext.getAttribute(ESCAPE_XML_ATTRIBUTE);
+        if (escapeXml != null && !escapeXml) {
+            return null;
+        }
+            
         try {
             if (excludeMe.get()) {
                 return null;

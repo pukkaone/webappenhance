@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://java.sun.com/xml/ns/javaee
+        http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+    version="2.1">
+
+  <description>Web application enhancements library @WAE_VERSION@.@BUILD_NUMBER@</description>
+  <display-name>Web application enhancements library</display-name>
+  <tlib-version>@WAE_VERSION@.@BUILD_NUMBER@</tlib-version>
+  <short-name>wae</short-name>
+  <uri>http://pukkaone.github.com/jsp</uri>
+
+  <tag>
+    <description>
+      Tag surrounds JSP code in which EL expressions should not be XML-escaped.
+    </description> 
+    <name>out</name>
+    <tag-class>com.github.pukkaone.jsp.OutTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <description>
+Determines whether characters &lt;,&gt;,&amp;,'," in EL expression values
+will be converted to their corresponding character entity codes.
+Default value is true.
+      </description>
+      <name>escapeXml</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+
+</taglib>
