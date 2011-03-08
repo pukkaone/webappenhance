@@ -33,7 +33,7 @@
   </target>
 
   <!-- Compile main code -->
-  <target name="compile" depends="configure">
+  <target name="compile" depends="init">
     <javac
         srcdir="${src.dir}"
         destdir="${classes.dir}"
@@ -51,9 +51,11 @@
   </target>
 
   <!-- Create JAR. -->
-  <property name="jar.file" value="${dist.dir}/${ant.project.name}.jar"/>
+  <target name="dist" depends="configure, compile">
+    <property
+        name="jar.file"
+        value="${dist.dir}/${ant.project.name}-${WAE_VERSION}.${BUILD_NUMBER}.jar"/>
 
-  <target name="dist" depends="compile">
     <jar jarfile="${jar.file}" basedir="${classes.dir}">
       <manifest>
         <attribute
