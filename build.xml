@@ -23,11 +23,16 @@
 
   <!-- Substitute tokens in run-time configuration files. -->
   <target name="configure" depends="init, version">
+    <tstamp>
+      <format property="YEAR" pattern="yyyy"/>
+    </tstamp>
+  
     <copy todir="${classes.dir}" overwrite="true">
       <fileset dir="${template.dir}"/>
       <filterset>
         <filter token="WAE_VERSION" value="${WAE_VERSION}"/>
         <filter token="BUILD_NUMBER" value="${BUILD_NUMBER}"/> 
+        <filter token="YEAR" value="${YEAR}"/> 
       </filterset>
     </copy>
   </target>
@@ -67,7 +72,7 @@
   
   <!-- Clean up build directories. -->
   <target name="clean">
-    <delete dir="${build.dir}"/>
+    <delete dir="${output.dir}"/>
     <delete dir="${dist.dir}"/>
   </target>
     

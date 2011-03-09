@@ -12,7 +12,7 @@ In the `web.xml` file, add a listener:
     </listener> 
 
 
-## Escape EL expression values to prevent cross-site scripting
+## Escape JSP EL values to prevent cross-site scripting
 
 In the `web.xml` file, add a listener:
 
@@ -23,8 +23,7 @@ In the `web.xml` file, add a listener:
 
 ### Disable escaping
 
-Use a custom tag to surround JSP code in which you do not want EL expression
-values to be escaped:
+Use a custom tag to surround JSP code in which EL values should not be escaped:
 
     <%@ taglib prefix="enhance" uri="http://pukkaone.github.com/jsp" %>
 
