@@ -80,7 +80,7 @@ public class EscapeXmlELResolver extends ELResolver {
             // infinite recursion, set a flag to prevent this resolver from
             // invoking the original resolver chain again when its turn in the
             // chain comes around.
-            excludeMe.set(true);
+            excludeMe.set(Boolean.TRUE);
             Object value = context.getELResolver().getValue(
                     context, base, property);
 
@@ -90,7 +90,7 @@ public class EscapeXmlELResolver extends ELResolver {
             return value;
 
         } finally {
-            excludeMe.remove();
+            excludeMe.set(Boolean.FALSE);
         }
     }
 
