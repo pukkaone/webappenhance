@@ -7,16 +7,16 @@
         http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
     version="2.1">
 
-  <description>Web application enhancements library @WAE_VERSION@.@BUILD_NUMBER@</description>
+  <description>Web application enhancements library @WAE_VERSION@</description>
   <display-name>Web application enhancements library</display-name>
-  <tlib-version>@WAE_VERSION@.@BUILD_NUMBER@</tlib-version>
+  <tlib-version>@WAE_VERSION@</tlib-version>
   <short-name>wae</short-name>
   <uri>http://pukkaone.github.com/jsp</uri>
 
   <tag>
     <description>
       Tag surrounds JSP code in which EL expressions should not be XML-escaped.
-    </description> 
+    </description>
     <name>out</name>
     <tag-class>com.github.pukkaone.jsp.OutTag</tag-class>
     <body-content>JSP</body-content>

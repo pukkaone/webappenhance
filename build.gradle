@@ -1,0 +1,79 @@
+apply plugin: 'eclipse'
+apply plugin: 'java'
+
+sourceCompatibility = 1.6
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'javax:javaee-api:6.0'
+    testCompile 'junit:junit:4.10'
+}
+
+// Gets version from tag.
+def readVersion() {
+    def output = new ByteArrayOutputStream()
+    def result = exec {
+        commandLine = ['git', 'describe']
+        standardOutput = output
+        ignoreExitValue = true
+    }
+    def version = (result.getExitValue() == 0) ?
+            output.toString().trim() : 'UNKNOWN'
+    println "Version ${version}"
+    return version
+}
+
+// Gets build number by counting commits to tag named 'build'.
+def readBuildNumber() {
+    def output = new ByteArrayOutputStream()
+    def result = exec {
+        commandLine = ['git', 'describe', '--match', 'build']
+        standardOutput = output
+        ignoreExitValue = true
+    }
+    def buildNumber = (result.getExitValue() == 0) ?
+            output.toString().split('-')[1] : 'UNKNOWN'
+    println "Build number ${buildNumber}"
+    return buildNumber
+}
+
+def assignVersion() {
+    ext.version = readVersion()
+    ext.buildNumber = readBuildNumber()
+    project.version = "${ext.version}.${ext.buildNumber}".toString()
+}
+
+def allProcessResourcesTasks() {
+    sourceSets*.processResourcesTaskName.collect {
+        tasks[it]
+    }
+}
+
+afterEvaluate { project ->
+    assignVersion()
+
+    configure(allProcessResourcesTasks()) {
+        filter(
+                org.apache.tools.ant.filters.ReplaceTokens,
+                tokens: [WAE_VERSION: project.version])
+    }
+}
+
+import org.gradle.plugins.ide.eclipse.model.SourceFolder
+
+eclipse.classpath.file {
+    whenMerged { classpath ->
+        classpath.entries.findAll {
+            it instanceof SourceFolder &&
+            it.path.startsWith("src/main/")
+        }*.output = "build/classes/main"
+
+        classpath.entries.findAll {
+            it instanceof SourceFolder &&
+            it.path.startsWith("src/test/")
+        }*.output = "build/classes/test"
+    }
+}
