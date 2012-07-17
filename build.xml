@@ -18,7 +18,6 @@
     <mkdir dir="${classes.dir}"/>
     <mkdir dir="${test.classes.dir}"/>
     <mkdir dir="${test.reports.dir}"/>
-    <mkdir dir="${dist.dir}"/>
   </target>
 
   <!-- Substitute tokens in run-time configuration files. -->
@@ -59,7 +58,7 @@
   <target name="dist" depends="configure, compile">
     <property
         name="jar.file"
-        value="${dist.dir}/${ant.project.name}-${WAE_VERSION}.${BUILD_NUMBER}.jar"/>
+        value="${output.dir}/${ant.project.name}-${WAE_VERSION}.${BUILD_NUMBER}.jar"/>
 
     <jar jarfile="${jar.file}" basedir="${classes.dir}">
       <manifest>
@@ -73,7 +72,6 @@
   <!-- Clean up build directories. -->
   <target name="clean">
     <delete dir="${output.dir}"/>
-    <delete dir="${dist.dir}"/>
   </target>
     
 </project>
