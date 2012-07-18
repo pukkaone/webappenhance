@@ -4,11 +4,14 @@ apply plugin: 'java'
 sourceCompatibility = 1.6
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
-    compile 'javax:javaee-api:6.0'
+    compile 'javax.el:el-api:2.2'
+    compile 'javax.servlet:servlet-api:2.5'
+    compile 'javax.servlet.jsp:jsp-api:2.2'
     testCompile 'junit:junit:4.10'
 }
 
