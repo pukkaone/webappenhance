@@ -58,6 +58,12 @@ def allProcessResourcesTasks() {
 afterEvaluate { project ->
     assignVersion()
 
+    jar {
+        manifest {
+            attributes('Implementation-Version': project.version)
+        }
+    }
+
     configure(allProcessResourcesTasks()) {
         filter(
                 org.apache.tools.ant.filters.ReplaceTokens,
@@ -71,12 +77,12 @@ eclipse.classpath.file {
     whenMerged { classpath ->
         classpath.entries.findAll {
             it instanceof SourceFolder &&
-            it.path.startsWith("src/main/")
-        }*.output = "build/classes/main"
+            it.path.startsWith('src/main/')
+        }*.output = 'build/classes/main'
 
         classpath.entries.findAll {
             it instanceof SourceFolder &&
-            it.path.startsWith("src/test/")
-        }*.output = "build/classes/test"
+            it.path.startsWith('src/test/')
+        }*.output = 'build/classes/test'
     }
 }
