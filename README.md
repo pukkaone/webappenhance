@@ -35,8 +35,8 @@ Use a custom tag to surround JSP code in which EL values should not be escaped:
 ## Read model data in Jersey MVC JSP templates without "it."
 
 Jersey's MVC framework exposes the model object to the JSP template as a
-request attribute named "it".  To read a model property, a JSP template must
-evaluate an EL expression based on the "it" object, for example,
+request attribute named "it".  To read the model data, a JSP template must
+evaluate an EL expression reading a property of this object, for example,
 `${it.propertyName}`.  This custom EL resolver exposes model properties as
 implicit objects, allowing a JSP template to read a model property with an EL
 expression like `${propertyName}`.

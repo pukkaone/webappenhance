@@ -96,7 +96,7 @@ public class EscapeXmlELResolver extends ELResolver {
 
     @Override
     public boolean isReadOnly(ELContext context, Object base, Object property) {
-        return false;
+        return true;
     }
 
     @Override
