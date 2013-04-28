@@ -90,7 +90,7 @@ public class EscapeXmlELResolver extends ELResolver {
             return value;
 
         } finally {
-            excludeMe.set(Boolean.FALSE);
+            excludeMe.remove();
         }
     }
 
