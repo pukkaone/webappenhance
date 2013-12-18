@@ -3,6 +3,17 @@
 Utility library for Java web applications
 
 
+## Add library to your project
+
+Add this Maven dependency:
+
+    <dependency>
+      <groupId>com.github.pukkaone</groupId>
+      <artifactId>webappenhance</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+
+
 ## Compile JSPs on startup
 
 In the `web.xml` file, add a listener:
