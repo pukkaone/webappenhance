@@ -1,6 +1,19 @@
+buildscript {
+    repositories {
+        maven { url 'http://repo.springsource.org/plugins-release' }
+    }
+    dependencies {
+        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.5'
+    }
+}
+
 apply plugin: 'eclipse'
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'propdeps'
+apply plugin: 'propdeps-eclipse'
+apply plugin: 'propdeps-idea'
+apply plugin: 'propdeps-maven'
 apply plugin: 'signing'
 
 group = 'com.github.pukkaone'
@@ -13,10 +26,10 @@ repositories {
 }
 
 dependencies {
-    compile 'javax.el:el-api:2.2'
-    compile 'javax.servlet:servlet-api:2.5'
-    compile 'javax.servlet.jsp:jsp-api:2.2'
-    testCompile 'junit:junit:4.10'
+    provided 'javax.el:el-api:2.2'
+    provided 'javax.servlet:servlet-api:2.5'
+    provided 'javax.servlet.jsp:jsp-api:2.2'
+    testCompile 'junit:junit:4.11'
 }
 
 // Gets version from tag.
