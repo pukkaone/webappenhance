@@ -245,7 +245,7 @@ public class ValueResolver {
      *
      * @param name
      *            name to resolve
-     * @return
+     * @return value
      */
     public Object getValue(String name) {
         Object value = getValueInternal(name);
