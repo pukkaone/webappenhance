@@ -1,5 +1,9 @@
 apply plugin: 'eclipse'
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+group = 'com.github.pukkaone'
 
 sourceCompatibility = 1.6
 
@@ -29,24 +33,8 @@ def readVersion() {
     return version
 }
 
-// Gets build number by counting commits to tag named 'build'.
-def readBuildNumber() {
-    def output = new ByteArrayOutputStream()
-    def result = exec {
-        commandLine = ['git', 'describe', '--match', 'build']
-        standardOutput = output
-        ignoreExitValue = true
-    }
-    def buildNumber = (result.getExitValue() == 0) ?
-            output.toString().split('-')[1] : 'UNKNOWN'
-    println "Build number ${buildNumber}"
-    return buildNumber
-}
-
 def assignVersion() {
-    ext.version = readVersion()
-    ext.buildNumber = readBuildNumber()
-    project.version = "${ext.version}.${ext.buildNumber}".toString()
+    project.version = readVersion()
 }
 
 def allProcessResourcesTasks() {
@@ -68,6 +56,66 @@ afterEvaluate { project ->
         filter(
                 org.apache.tools.ant.filters.ReplaceTokens,
                 tokens: [WAE_VERSION: project.version])
+    }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.project {
+                name 'webappenhance'
+                packaging 'jar'
+                description 'Java web application enhancements library'
+                url 'https://github.com/pukkaone/webappenhance'
+
+                scm {
+                    connection 'scm:git:git@github.com:pukkaone/webappenhance.git'
+                    developerConnection 'scm:git:git@github.com:pukkaone/webappenhance.git'
+                    url 'https://github.com/pukkaone/webappenhance'
+                }
+
+                licenses {
+                    license {
+                        name 'The BSD 2-Clause License'
+                        url 'http://opensource.org/licenses/BSD-2-Clause'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'pukkaone'
+                        name 'Chin Huang'
+                    }
+                }
+            }
+        }
     }
 }
 
